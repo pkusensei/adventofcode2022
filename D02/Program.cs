@@ -5,30 +5,20 @@ int P1(IEnumerable<string> lines) => lines.Select(
         {
             int a = ToScore(line[0]);
             int b = ToScore(line[2]);
-            return (a, b) switch
-            {
-                (1, 1) or (2, 2) or (3, 3) => 3 + b,
-                (1, 2) or (2, 3) or (3, 1) => 6 + b,
-                _ => 0 + b,
-            };
+            if (a == b)
+                return 3 + b;
+            else if ((a + 1) % 3 == b % 3)
+                return 6 + b;
+            else
+                return 0 + b;
         }
     ).Sum();
 
 int P2(IEnumerable<string> lines) => lines.Select(
         line => line[2] switch
         {
-            'X' => line[0] switch
-            {
-                'A' => 0 + ToScore('C'),
-                'B' => 0 + ToScore('A'),
-                _ => 0 + ToScore('B'),
-            },
-            'Z' => line[0] switch
-            {
-                'A' => 6 + ToScore('B'),
-                'B' => 6 + ToScore('C'),
-                _ => 6 + ToScore('A'),
-            },
+            'X' => 0 + (ToScore(line[0]) + 1) % 3 + 1,
+            'Z' => 6 + ToScore(line[0]) % 3 + 1,
             _ => 3 + ToScore(line[0])
         }
     ).Sum();

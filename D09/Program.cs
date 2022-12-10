@@ -60,10 +60,10 @@ bool InTouch(Point a, Point b)
 
 Point Move(Dir dir, Point p) => dir switch
 {
-    Dir.Right => new Point(p.X + 1, p.Y),
-    Dir.Left => new Point(p.X - 1, p.Y),
-    Dir.Up => new Point(p.X, p.Y - 1),
-    _ => new Point(p.X, p.Y + 1),
+    Dir.Right => p with { X = p.X + 1 },
+    Dir.Left => p with { X = p.X - 1 },
+    Dir.Up => p with { Y = p.Y - 1 },
+    _ => p with { Y = p.Y + 1 },
 };
 
 Dir ToDir(char c) => c switch

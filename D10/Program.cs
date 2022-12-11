@@ -2,16 +2,17 @@
 using System.Text;
 
 int P1(IEnumerable<string> lines) => Parse(lines)
-        .Where(i => (i.cycle + 20) % 40 == 0 && i.cycle <= 220)
-        .Select(i => i.cycle * i.x)
+        .Select((x, idx) => (x, idx + 1))
+        .Where(pair => (pair.Item2 + 20) % 40 == 0 && pair.Item2 <= 220)
+        .Select(pair => pair.Item2 * pair.x)
         .Sum();
 
 void P2(IEnumerable<string> lines)
 {
     var sb = new StringBuilder(40);
-    foreach (var (cycle, x) in Parse(lines))
+    foreach (var (x, i) in Parse(lines).Select((x, i) => (x, i)))
     {
-        var pos = (cycle - 1) % 40;
+        var pos = i % 40;
         var sprites = Enumerable.Range(x - 1, 3);
         if (sprites.Contains(pos))
             sb.Append('#');
@@ -25,24 +26,21 @@ void P2(IEnumerable<string> lines)
     }
 }
 
-IEnumerable<(int cycle, int x)> Parse(IEnumerable<string> lines)
+IEnumerable<int> Parse(IEnumerable<string> lines)
 {
-    int cycle = 0;
     int x = 1;
     foreach (var line in lines)
     {
         if (line.StartsWith("noop"))
         {
-            cycle += 1;
-            yield return (cycle, x);
+            yield return x;
         }
         else if (line.StartsWith("addx"))
         {
             var v = int.Parse(line.Split(' ', StringSplitOptions.TrimEntries)[1]);
             for (int i = 0; i < 2; i++)
             {
-                cycle += 1;
-                yield return (cycle, x);
+                yield return x;
             }
             x += v;
         }

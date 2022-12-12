@@ -7,7 +7,7 @@ int P1(IEnumerable<string> lines)
     {
         foreach (var unit in units)
         {
-            unit.Process(units, 0);
+            unit.Process(units);
         }
     }
     return units.Select(u => u.InspectTimes)
@@ -105,18 +105,20 @@ Debug.Assert(P2(input) == 15693274740);
 
 class Unit
 {
-    public List<Int64> Items { get; init; }
-    public Func<Int64, Int64> Op { get; init; }
+    public List<Int64> Items { get; init; } = null!;
+    public Func<Int64, Int64> Op { get; init; } = null!;
     public int Divisor { get; init; }
     public int TargetT { get; init; }
     public int TargetF { get; init; }
     public int InspectTimes { get; private set; } = 0;
 
+    public void Process(List<Unit> units) => Process(units, 0);
+
     public void Process(List<Unit> units, int level)
     {
         foreach (var item in Items)
         {
-            // This could produce Int64 values even with Int32 param
+            // This could produce Int64 values with Int32 param
             // The culprit is likely "old * old"
             var newItem = Op(item);
 

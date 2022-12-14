@@ -193,7 +193,7 @@ addx -11
 noop
 noop
 noop".Split('\n');
-Debug.Assert(P1(test) == 13140, $"{P1(test)}");
+Debug.Assert(P1(test) == 13140);
 // P2(test);
 
 var input = File.ReadLines("input.txt");

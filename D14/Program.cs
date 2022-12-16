@@ -20,15 +20,15 @@ bool Fall(IDictionary<Coord, char> grid, in int low, Coord point)
         var pNext = point with { Y = point.Y + 1 };
         var pLeft = pNext with { X = pNext.X - 1 };
         var pRight = pNext with { X = pNext.X + 1 };
-        if (!grid.TryGetValue(pNext, out var _))
+        if (!grid.ContainsKey(pNext))
         {
             point = pNext;
         }
-        else if (!grid.TryGetValue(pLeft, out _))
+        else if (!grid.ContainsKey(pLeft))
         {
             point = pLeft;
         }
-        else if (!grid.TryGetValue(pRight, out _))
+        else if (!grid.ContainsKey(pRight))
         {
             point = pRight;
         }
@@ -50,15 +50,15 @@ bool Fall2(IDictionary<Coord, char> grid, in int low, Coord point)
         var pNext = point with { Y = point.Y + 1 };
         var pLeft = pNext with { X = pNext.X - 1 };
         var pRight = pNext with { X = pNext.X + 1 };
-        if (!grid.TryGetValue(pNext, out var _))
+        if (!grid.ContainsKey(pNext))
         {
             point = pNext;
         }
-        else if (!grid.TryGetValue(pLeft, out _))
+        else if (!grid.ContainsKey(pLeft))
         {
             point = pLeft;
         }
-        else if (!grid.TryGetValue(pRight, out _))
+        else if (!grid.ContainsKey(pRight))
         {
             point = pRight;
         }

@@ -19,8 +19,8 @@ Int64 P2(IEnumerable<string> lines, int limit)
     for (int y = 0; y < limit; y++)
     {
         var covered = FindReacheable(sensors, y)
-            .Select(s => FindCoverage(s, y, limit)).ToList();
-        covered.Sort((a, b) => a.xmin.CompareTo(b.xmin));
+            .Select(s => FindCoverage(s, y, limit))
+            .OrderBy(p => p.xmin).ToList();
 
         bool merged = true;
         while (merged && covered.Count > 1)
@@ -44,7 +44,7 @@ Int64 P2(IEnumerable<string> lines, int limit)
 }
 
 IEnumerable<Sensor> FindReacheable(IEnumerable<Sensor> sensors, int row)
-=> sensors.Where(s => Math.Abs(s.C.Y - row) <= s.MaxDist).ToList();
+=> sensors.Where(s => Math.Abs(s.C.Y - row) <= s.MaxDist);
 
 (int xmin, int xmax) FindRange(IEnumerable<Sensor> sensors, int row)
 {

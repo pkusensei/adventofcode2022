@@ -3,15 +3,14 @@
 int P1(IEnumerable<string> lines)
 {
     var res = 0;
-    var queue = new Queue<Coord>(Parse(lines));
     var seen = new List<Coord>();
 
-    while (queue.TryDequeue(out var current))
+    foreach (var curr in Parse(lines))
     {
         res += 6;
-        var touched = seen.Count(c => c.Distance(current) == 1);
+        var touched = seen.Count(c => c.Distance(curr) == 1);
         res -= touched * 2;
-        seen.Add(current);
+        seen.Add(curr);
     }
     return res;
 }
@@ -53,7 +52,7 @@ int P2(IEnumerable<string> lines)
 
 IEnumerable<Coord> Parse(IEnumerable<string> lines) => lines.Select(
     line => new Coord(line.Split(',', StringSplitOptions.TrimEntries)
-                           .Select(int.Parse).ToArray())
+                          .Select(int.Parse).ToArray())
 );
 
 var test = @"2,2,2

@@ -75,7 +75,7 @@ var input = File.ReadLines("input.txt");
 Debug.Assert(P1(input) == 4580);
 Debug.Assert(P2(input) == 2610);
 
-record Coord(int X, int Y, int Z)
+record struct Coord(int X, int Y, int Z)
 {
     public Coord(int[] nums) :
         this(nums[0], nums[1], nums[2])

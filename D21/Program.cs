@@ -2,47 +2,57 @@
 
 long P1(IEnumerable<string> lines)
 {
-    var nodes = Parse(lines);
-    return nodes["root"].Num;
+    var (root, _) = Parse(lines);
+    return root.Num;
 }
 
 long P2(IEnumerable<string> lines)
 {
-    var nodes = Parse(lines);
-    var root = (OpNode)nodes["root"];
-    var left = nodes[root.Left];
-    var right = nodes[root.Right];
+    var (root, humn) = Parse(lines);
+    var left = root.Left!;
+    var right = root.Right!;
     if (left.HasH)
         left.Num = right.Num;
     else if (right.HasH)
         right.Num = left.Num;
-    return nodes["humn"].Num;
+    return humn.Num;
 }
 
-Dictionary<string, Node> Parse(IEnumerable<string> lines)
+(OpNode, NumNode) Parse(IEnumerable<string> lines)
 {
     var res = new Dictionary<string, Node>();
+    NumNode? humn = null;
     foreach (var line in lines)
     {
         var items = line.Split(' ', StringSplitOptions.TrimEntries);
         var name = items[0].Substring(0, 4);
         if (items.Length == 2)
         {
-            var num = int.Parse(items[1]);
-            res.Add(name, new NumNode { Name = name, Num = num });
+            var num = long.Parse(items[1]);
+            var node = new NumNode { Name = name, Num = num };
+            res.Add(name, node);
+            if (name == "humn")
+                humn = node;
         }
         else
         {
             res.Add(name, new OpNode
             {
-                Left = items[1],
-                Right = items[3],
+                LName = items[1],
+                RName = items[3],
                 Op = items[2][0],
-                Dict = res,
             });
         }
     }
-    return res;
+    foreach (var v in res.Values)
+    {
+        if (v is OpNode node)
+        {
+            node.Left = res[node.LName];
+            node.Right = res[node.RName];
+        }
+    }
+    return ((OpNode)res["root"]!, humn!);
 }
 
 var test = @"root: pppw + sjmn
@@ -86,39 +96,40 @@ sealed class OpNode : Node
     {
         get => Op switch
         {
-            '+' => Dict[Left].Num + Dict[Right].Num,
-            '-' => Dict[Left].Num - Dict[Right].Num,
-            '*' => Dict[Left].Num * Dict[Right].Num,
-            _ => Dict[Left].Num / Dict[Right].Num,
+            '+' => Left!.Num + Right!.Num,
+            '-' => Left!.Num - Right!.Num,
+            '*' => Left!.Num * Right!.Num,
+            _ => Left!.Num / Right!.Num,
         };
         set
         {
-            if (Dict[Left].HasH)
+            if (Left!.HasH)
             {
-                Dict[Left].Num = Op switch
+                Left!.Num = Op switch
                 {
-                    '+' => value - Dict[Right].Num,
-                    '-' => value + Dict[Right].Num,
-                    '*' => value / Dict[Right].Num,
-                    _ => value * Dict[Right].Num,
+                    '+' => value - Right!.Num,
+                    '-' => value + Right!.Num,
+                    '*' => value / Right!.Num,
+                    _ => value * Right!.Num,
                 };
             }
-            else if (Dict[Right].HasH)
+            else if (Right!.HasH)
             {
-                Dict[Right].Num = Op switch
+                Right!.Num = Op switch
                 {
-                    '+' => value - Dict[Left].Num,
-                    '-' => Dict[Left].Num - value,
-                    '*' => value / Dict[Left].Num,
-                    _ => value / Dict[Left].Num,
+                    '+' => value - Left!.Num,
+                    '-' => Left!.Num - value,
+                    '*' => value / Left!.Num,
+                    _ => value / Left!.Num,
                 };
             }
         }
     }
 
-    public string Left { get; init; } = null!;
-    public string Right { get; init; } = null!;
+    public string LName { get; init; } = null!;
+    public string RName { get; init; } = null!;
+    public Node? Left { get; set; }
+    public Node? Right { get; set; }
     public char Op { get; init; }
-    public IReadOnlyDictionary<string, Node> Dict { get; init; } = null!;
-    public override bool HasH => Dict[Left].HasH || Dict[Right].HasH;
+    public override bool HasH => Left!.HasH || Right!.HasH;
 }

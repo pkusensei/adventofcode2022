@@ -65,11 +65,18 @@ Move(IReadOnlyDictionary<Complex, char> grid,
         }
         else
         { // Wraps around
-            (attempt, dir) = func(grid, pos, dir);
+            (attempt, var newDir) = func(grid, pos, dir);
 
-            Debug.Assert(grid.ContainsKey(attempt), $"{pos}");
             if (grid[attempt] == '.')
+            {
                 pos = attempt;
+                dir = newDir;
+                // P1: dir does not change when wrapping around edges
+                // this does nothing
+                // vs 
+                // P2: dir changes when wrapping around
+                // but only when it does not hit a wall '#' right away
+            }
             else
                 return (pos, dir); // '#': wraps to a wall
         }
@@ -205,9 +212,11 @@ Attempt2(IReadOnlyDictionary<Complex, char> grid, Complex pos, Complex dir)
 /*
     -------
     |1 |2 |
+    -------
     |3 |
- ----  |
+ -------
  |4 |5 |
+ ----
  |6 |
  ----
 */
@@ -267,7 +276,7 @@ Debug.Assert(P1(test) == 6032);
 
 var input = File.ReadLines("input.txt");
 Debug.Assert(P1(input) == 131052);
-Debug.Assert(P2(input) == 4578); // Produces 192009
+Debug.Assert(P2(input) == 4578);
 
 delegate ValueTuple<Complex, Complex> Attempt(IReadOnlyDictionary<Complex, char> grid,
                                               Complex pos, Complex dir);

@@ -67,7 +67,7 @@ Debug.Assert(p2 == 20);
 var input = File.ReadLines("input.txt");
 (p1, p2) = Solve(input);
 Debug.Assert(p1 == 3925);
-Debug.Assert(p2 == 903);  // Must have run into an infinite loop somewhere
+Debug.Assert(p2 == 903);  // It's correct; just takes forever to run
 
 record struct Coord(int X, int Y)
 {
